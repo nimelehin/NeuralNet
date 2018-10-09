@@ -16,6 +16,7 @@
 using namespace std;
 
 class net {
+    vector<pair<int, string>>dims;
     double learningRate = 0.1;
     int epoch = 5;
     vector<layer>neuralNet;
@@ -27,32 +28,25 @@ public:
     }
     
     ~net(){
-        cout << "lel";
+        cout << "Cleared";
     }
     
-    void createNet(vector<int>topology, vector<vector<vector<double>>>wew){
-        for (int layerId = 0; layerId < topology.size(); layerId++) {
-            int nextLayerSize = layerId == (topology.size() - 1) ? 0 : topology[layerId+1];
-            int currentLayerSize = topology[layerId];
-            vector<neuron>currentLayer;
-            for (int neuronId = 0; neuronId < currentLayerSize; neuronId++) {
-                neuron newNeuron(nextLayerSize, wew[layerId][neuronId]);
-                currentLayer.push_back(newNeuron);
-            }
-            neuron biasNeuron(nextLayerSize);
-            biasNeuron.setOutValue(1.0);
-            currentLayer.push_back(biasNeuron);
-            neuralNet.push_back(currentLayer);
-        }
+    void addLayer(int dimCount, string activationFunction) {
+        this->dims.push_back(make_pair(dimCount, activationFunction));
     }
     
-    void createNet(vector<int>topology){
+    void compile(){
+        this->createNet(this->dims);
+    }
+    
+    void createNet(vector<pair<int, string>>topology){
         for (int layerId = 0; layerId < topology.size(); layerId++) {
-            int nextLayerSize = layerId == (topology.size() - 1) ? 0 : topology[layerId+1];
-            int currentLayerSize = topology[layerId];
+            int nextLayerSize = layerId == (topology.size() - 1) ? 0 : topology[layerId+1].first;
+            int currentLayerSize = topology[layerId].first;
+            string activationFunction = topology[layerId].second;
             vector<neuron>currentLayer;
             for (int neuronId = 0; neuronId < currentLayerSize; neuronId++) {
-                neuron newNeuron(nextLayerSize);
+                neuron newNeuron(nextLayerSize, activationFunction);
                 currentLayer.push_back(newNeuron);
             }
             neuron biasNeuron(nextLayerSize);
@@ -66,14 +60,6 @@ public:
         for (int neuronId = 0; neuronId < neuralNet[0].size(); neuronId++) {
             neuralNet[0][neuronId].setOutValue(initValues[neuronId]);
         }
-        
-//        cout << "\n\n-----\nweights\n\n";
-//        neuralNet[0][0].printWeight();
-//        neuralNet[0][1].printWeight();
-//        neuralNet[0][2].printWeight();
-//        neuralNet[1][0].printWeight();
-//        neuralNet[1][1].printWeight();
-//        cout << "------\n\n\n";
         
         for (int layerId = 0; layerId < neuralNet.size() - 1; layerId++) {
             for (int neuronId = 0; neuronId < neuralNet[layerId+1].size(); neuronId++) {
@@ -104,12 +90,8 @@ public:
         for (int neuronId = 0; neuronId < neuralNet.back().size() - 1; neuronId++) {
             neuralNet.back()[neuronId].calcOutError(y[neuronId]);
             double w_delta = neuralNet.back()[neuronId].calcDelta();
-            //cout << "delta" << " " << w_delta << "\n\n";
             neuralNet.back()[neuronId].updateWithPosition(neuralNet[neuralNet.size() - 2], neuronId, w_delta, this->learningRate);
         }
-        
-        //neuralNet[1][0].printWeight();
-        //neuralNet[1][1].printWeight();
         
         for (int layerId = neuralNet.size() - 2; layerId > 0; layerId--) {
             for (int neuronId = 0; neuronId < neuralNet[layerId].size() - 1; neuronId++) {
@@ -117,9 +99,6 @@ public:
                 neuralNet[layerId][neuronId].updateWithPosition(neuralNet[layerId - 1], neuronId, w_delta, this->learningRate);
             }
         }
-        
-        //cout << "\n";
-        
     }
     
     void train(vector<vector<double>>X, vector<vector<double>>y) {

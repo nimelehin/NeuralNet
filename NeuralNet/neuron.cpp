@@ -25,7 +25,14 @@ public:
         weightToNextLayer.resize(nextLayerSize, 0.3);
         for (auto &i : weightToNextLayer){
             i = double(rand() % 1000 - 500) / double(1000);
-            //cout << i << " ";
+        }
+    }
+    
+    neuron(int nextLayerSize, string activationFunction) {
+        this->activation = activationFunction;
+        weightToNextLayer.resize(nextLayerSize, 0.3);
+        for (auto &i : weightToNextLayer){
+            i = double(rand() % 1000 - 500) / double(1000);
         }
     }
     
@@ -37,7 +44,6 @@ public:
             weightToNextLayer.resize(nextLayerSize, 0.3);
             for (auto &i : weightToNextLayer){
                 i = double(rand() % 1000 - 500) / double(1000);
-                //cout << i << " ";
             }
         }
     }
@@ -67,6 +73,16 @@ public:
             double real = 1 / (1 + exp(this->outValue));
             return (1 - real) * real;
         }
+        else if (activation == "tanh") {
+            double real = tanh(this->outValue);
+            return double(1 - real * real);
+        }
+        else if (activation == "relu") {
+            if (this->outValue >= 0.0) {
+                return 1.0;
+            }
+            return 0.0;
+        }
         else {
             return 0;
         }
@@ -88,6 +104,12 @@ public:
         if (activation == "sigmoid") {
             return 1 / (1 + exp(-val));
         }
+        else if (activation == "tanh") {
+            return tanh(val);
+        }
+        else if (activation == "relu") {
+            return max(0.0, val);
+        }
         else {
             return val;
         }
@@ -100,7 +122,6 @@ public:
     void pushToLayer(vector<neuron> &layer){
         for (int neuronId = 0; neuronId < layer.size() - 1; neuronId++) {
             layer[neuronId].addToInValue(this->outValue * weightToNextLayer[neuronId]);
-            //cout << "pushed " << this->outValue * weightToNextLayer[neuronId] << "\n";
         }
     }
     

@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "NeuralNet/net.cpp"
-            timestampString = "560711883.410027"
+            timestampString = "560765945.472052"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
+            startingLineNumber = "59"
+            endingLineNumber = "59"
             landmarkName = "feedForward(vector&lt;double&gt;initValues)"
             landmarkType = "7">
          </BreakpointContent>

@@ -15,12 +15,13 @@ int main(int argc, const char * argv[]) {
     
     vector<vector<double>>X, Y;
     
+    //TEST DATA
     
     vector<double>x1, y1;
     x1.push_back(1);
     x1.push_back(1);
     x1.push_back(0);
-    y1.push_back(0);
+    y1.push_back(1);
     y1.push_back(0);
     X.push_back(x1);
     Y.push_back(y1);
@@ -29,17 +30,15 @@ int main(int argc, const char * argv[]) {
     x2.push_back(1);
     x2.push_back(0);
     x2.push_back(1);
-    y2.push_back(1);
+    y2.push_back(0);
     y2.push_back(1);
     X.push_back(x2);
     Y.push_back(y2);
     
-    vector<int>topology;
-    topology.push_back(3);
-    topology.push_back(10);
-    topology.push_back(5);
-    topology.push_back(4);
-    topology.push_back(2);
+    myNet.addLayer(2, "relu");
+    myNet.addLayer(4, "relu");
+    myNet.addLayer(3, "relu");
+    myNet.addLayer(2, "sigmoid");
     
     vector<vector<vector<double>>>ww;
     vector<vector<double>>layer1;
@@ -73,7 +72,7 @@ int main(int argc, const char * argv[]) {
     ww.push_back(layer1);
     layer1.clear();
     
-    myNet.createNet(topology);
+    myNet.compile();
     
     myNet.train(X, Y);
     
